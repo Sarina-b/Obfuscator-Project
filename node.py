@@ -33,4 +33,14 @@ def p_declaration(p):
                    | var_decl'''
     p[0] = p[1]
 
+def p_var_decl(p):
+        'var_decl : type_specifier ID SEMI'
+        p[0] = Node('var_decl', [], (p[1], p[2]))
+
+def p_type_specifier(p):
+    '''type_specifier : INT
+                          | CHAR_TYPE
+                          | BOOL'''
+    p[0] = p[1]
+
     parser = yacc.yacc()
