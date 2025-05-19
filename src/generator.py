@@ -29,5 +29,17 @@ def generate_code(node, indent=0):
     elif node.type == 'expr_stmt':
         expr = generate_code(node.children[0], 0) if node.children else ''
         return f"{space}{expr};"
+    elif node.type == 'if':
+        cond = generate_code(node.children[0], 0)
+        then_stmt = generate_code(node.children[1], indent)
+        code = f"{space}if ({cond}) {then_stmt}"
+        if len(node.children) > 2:
+            else_stmt = generate_code(node.children[2], indent)
+            code += f" else {else_stmt}"
+        return code
+    elif node.type == 'switch_block':
+        return f"{space}// control flow flattened"
+    elif node.type == 'label':
+        return f"{space}// label: {node.value}"
     else:
         return f"{space}// unknown node: {node.type}"
