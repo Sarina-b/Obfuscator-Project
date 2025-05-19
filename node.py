@@ -59,5 +59,19 @@ def p_param_list(p):
             p[0] = Node('param_list', p[1].children + [p[3]])
         else:
             p[0] = Node('param_list', [p[1]])
+def p_param(p):
+    'param : type_specifier ID'
+    p[0] = Node('param', [], (p[1], p[2]))
 
-    parser = yacc.yacc()
+def p_compound_stmt(p):
+    'compound_stmt : LBRACE declaration_list RBRACE'
+    p[0] = Node('compound_stmt', [p[2]])
+
+def p_empty(p):
+    'empty :'
+    p[0] = Node('empty')
+
+def p_error(p):
+    print("Syntax error at token:", p)
+
+parser = yacc.yacc()
