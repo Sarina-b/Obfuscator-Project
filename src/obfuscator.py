@@ -1,5 +1,7 @@
 import random
 import string
+from ast_builder import ASTNode
+
 
 
 class Obfuscator:
@@ -26,3 +28,10 @@ class Obfuscator:
             node.value = self.name_map[node.value]
         for child in node.children:
             self.rename_identifiers(child)
+
+    def insert_dead_code(self, node):
+        if node.type == 'block':
+            dead_var = self.random_name()
+            node.children.insert(0, ASTNode("var_decl", [], ("int", dead_var)))
+        for child in node.children:
+            self.insert_dead_code(child)
