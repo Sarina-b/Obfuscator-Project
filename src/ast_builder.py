@@ -9,3 +9,14 @@ class ASTNode:
 
     def __repr__(self):
         return f"{self.type}({self.value}) -> {self.children}"
+
+
+class ASTBuilder(MiniCParserVisitor):
+    def visitProgram(self, ctx):
+        children = [self.visit(child) for child in ctx.children if child.getText() != '<EOF>']
+        return ASTNode("program", children)
+
+    def visitDeclaration(self, ctx):
+        typename = ctx.type_().getText()
+        name = ctx.declarator().ID().getText()
+        return ASTNode("var_decl", [], (typename, name))
