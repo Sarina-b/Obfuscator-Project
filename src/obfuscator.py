@@ -35,3 +35,21 @@ class Obfuscator:
             node.children.insert(0, ASTNode("var_decl", [], ("int", dead_var)))
         for child in node.children:
             self.insert_dead_code(child)
+
+    def expression_equivalence(self, node):
+        if node.type == 'binop' and node.value == '+':
+            left, right = node.children
+            right_neg = ASTNode("int", [], -right.value) if right.type == "int" else right
+            node.type = 'binop'
+            node.value = '-'
+            node.children = [left, right_neg]
+        for child in node.children:
+            self.expression_equivalence(child)
+
+    def control_flow_flattening(self, node):
+        if node.type == 'function_def':
+            label1 = ASTNode('label', [], 'L1')
+            label2 = ASTNode('label', [], 'L2')
+            node.children.append(ASTNode('switch_block', [label1, label2]))
+        for child in node.children:
+            self.control_flow_flattening(child)
