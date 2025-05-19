@@ -61,3 +61,14 @@ class ASTBuilder(MiniCParserVisitor):
             return ASTNode("assign", [left, right])
         else:
             return self.visit(ctx.logicOr())
+
+    def visitAdditive(self, ctx):
+        if len(ctx.children) == 3:
+            left = self.visit(ctx.getChild(0))
+            op = ctx.getChild(1).getText()
+            right = self.visit(ctx.getChild(2))
+            return ASTNode("binop", [left, right], op)
+        else:
+            return self.visit(ctx.getChild(0))
+
+
