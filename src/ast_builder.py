@@ -20,3 +20,20 @@ class ASTBuilder(MiniCParserVisitor):
         typename = ctx.type_().getText()
         name = ctx.declarator().ID().getText()
         return ASTNode("var_decl", [], (typename, name))
+
+    def visitFunctionDef(self, ctx):
+        typename = ctx.type_().getText()
+        name = ctx.ID().getText()
+        params = self.visit(ctx.parameters()) if ctx.parameters() else ASTNode("params", [])
+        body = self.visit(ctx.block())
+        return ASTNode("function_def", [params, body], name)
+
+    def visitParameters(self, ctx):
+        return ASTNode("params", [self.visit(p) for p in ctx.parameter()])
+
+    def visitParameter(self, ctx):
+        typename = ctx.type_().getText()
+        name = ctx.declarator().ID().getText()
+        return ASTNode("param", [], (typename, name))
+
+
