@@ -53,3 +53,10 @@ class Obfuscator:
             node.children.append(ASTNode('switch_block', [label1, label2]))
         for child in node.children:
             self.control_flow_flattening(child)
+
+    def apply(self, ast):
+        self.rename_identifiers(ast)
+        self.insert_dead_code(ast)
+        self.expression_equivalence(ast)
+        self.control_flow_flattening(ast)
+        return ast
