@@ -36,4 +36,16 @@ class ASTBuilder(MiniCParserVisitor):
         name = ctx.declarator().ID().getText()
         return ASTNode("param", [], (typename, name))
 
+    def visitBlock(self, ctx):
+        stmts = [self.visit(stmt) for stmt in ctx.statement()]
+        return ASTNode("block", stmts)
 
+    def visitReturnStatement(self, ctx):
+        expr = self.visit(ctx.expression()) if ctx.expression() else None
+        return ASTNode("return", [expr] if expr else [])
+
+    def visitIfStatement(self, ctx):
+        cond = self.visit(ctx.expression())
+        then_stmt = self.visit(ctx.statement(0))
+        else_stmt = self.visit(ctx.statement(1)) if ctx.ELSE() else None
+        return ASTNode("if", [cond, then_stmt] + ([else_stmt] if else_stmt else []))
