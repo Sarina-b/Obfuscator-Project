@@ -71,4 +71,17 @@ class ASTBuilder(MiniCParserVisitor):
         else:
             return self.visit(ctx.getChild(0))
 
+    def visitPrimary(self, ctx):
+        if ctx.ID():
+            return ASTNode("id", [], ctx.ID().getText())
+        elif ctx.INT_LITERAL():
+            return ASTNode("int", [], int(ctx.INT_LITERAL().getText()))
+        elif ctx.CHAR_LITERAL():
+            return ASTNode("char", [], ctx.CHAR_LITERAL().getText())
+        elif ctx.BOOL_LITERAL():
+            return ASTNode("bool", [], ctx.BOOL_LITERAL().getText())
+        elif ctx.expression():
+            return self.visit(ctx.expression())
 
+    def visitChildren(self, node):
+        return [self.visit(child) for child in node.getChildren()]
