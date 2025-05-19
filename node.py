@@ -43,4 +43,21 @@ def p_type_specifier(p):
                           | BOOL'''
     p[0] = p[1]
 
+def p_function_decl(p):
+        'function_decl : type_specifier ID LPAREN params RPAREN compound_stmt'
+        p[0] = Node('function_decl', [p[4], p[6]], p[2])
+
+def p_params(p):
+        '''params : param_list
+                  | empty'''
+        p[0] = p[1]
+
+def p_param_list(p):
+        '''param_list : param_list COMMA param
+                      | param'''
+        if len(p) == 4:
+            p[0] = Node('param_list', p[1].children + [p[3]])
+        else:
+            p[0] = Node('param_list', [p[1]])
+
     parser = yacc.yacc()
