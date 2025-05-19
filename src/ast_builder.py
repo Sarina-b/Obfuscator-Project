@@ -49,3 +49,15 @@ class ASTBuilder(MiniCParserVisitor):
         then_stmt = self.visit(ctx.statement(0))
         else_stmt = self.visit(ctx.statement(1)) if ctx.ELSE() else None
         return ASTNode("if", [cond, then_stmt] + ([else_stmt] if else_stmt else []))
+
+    def visitExpressionStatement(self, ctx):
+        expr = self.visit(ctx.expression()) if ctx.expression() else None
+        return ASTNode("expr_stmt", [expr] if expr else [])
+
+    def visitAssignment(self, ctx):
+        if ctx.getChildCount() == 3:
+            left = self.visit(ctx.logicOr())
+            right = self.visit(ctx.assignment())
+            return ASTNode("assign", [left, right])
+        else:
+            return self.visit(ctx.logicOr())
