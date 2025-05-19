@@ -1,0 +1,5 @@
+/.idea
+.env
+/.fleet
+/.vscode
+/vendor
