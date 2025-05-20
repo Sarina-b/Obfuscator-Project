@@ -22,3 +22,8 @@ def main():
  # مرحله ۲: تولید AST
     tree = parser.program()
     ast = ASTBuilder().visitProgram(tree)
+# مرحله ۳: اعمال مبهم‌سازی
+    obfuscator = Obfuscator()
+    obfuscated_ast = obfuscator.apply(ast)
+# مرحله ۴: تولید کد خروجی
+    output_code = generate_code(obfuscated_ast)
