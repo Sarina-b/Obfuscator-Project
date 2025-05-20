@@ -1,5 +1,5 @@
 def generate_code(node, indent=0):
-    space = '    '      *
+    space = '    ' * indent
     if node.type == 'program':
         return '\n'.join(generate_code(child, indent) for child in node.children)
     elif node.type == 'function_def':
