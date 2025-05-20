@@ -27,3 +27,10 @@ def main():
     obfuscated_ast = obfuscator.apply(ast)
 # مرحله ۴: تولید کد خروجی
     output_code = generate_code(obfuscated_ast)
+    # مرحله ۵: نمایش یا ذخیره خروجی
+    with open("output.mc", "w") as f:
+        f.write(output_code)
+
+
+if name == "main":
+    main()
