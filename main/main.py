@@ -19,3 +19,6 @@ def main():
     lexer = MiniCLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
     parser = MiniCParser(token_stream)
+ # مرحله ۲: تولید AST
+    tree = parser.program()
+    ast = ASTBuilder().visitProgram(tree)
