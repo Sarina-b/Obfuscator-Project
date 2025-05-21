@@ -1,12 +1,12 @@
 from antlr4 import FileStream, CommonTokenStream
 from antlr_gen.MiniCLexer import MiniCLexer
 from antlr_gen.MiniCParserParser import  MiniCParserParser
-from ast_builder import ASTBuilder
-from obfuscator import Obfuscator
-from generator import generate_code
+from .ast_builder import ASTBuilder
+from .obfuscator import Obfuscator
+from .generator import generate_code
 
 def main():
-    input_path = "test_input/test_input.mc"
+    input_path = "test_input/input.mc"
     output_path = "test_output/output.mc"
 
     input_stream = FileStream(input_path, encoding='utf-8')

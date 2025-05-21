@@ -1,6 +1,6 @@
 import random
 import string
-from ast_builder import ASTNode
+from .ast_builder import ASTNode
 
 
 
