@@ -27,7 +27,7 @@ antlr4 -Dlanguage=Python3 MiniCParser.g4
 ### 3. Run the obfuscator on an input file:
 
 ```bash
-python main.py input.mc
+python main.py test_input.mc
 ```
 
 The obfuscated output will be written to `output.mc`.
