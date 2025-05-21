@@ -12,19 +12,20 @@ class ASTNode:
 
 class ASTBuilder(MiniCVisitor):
     def visitProgram(self, ctx):
-        print(f"[DEBUG] Visiting Program")
-        for child in ctx.children:
-            print(f"Child type: {type(child)}, Text: {child.getText()}")
         children = [self.visit(child) for child in ctx.children if child.getText() != '<EOF>']
         return ASTNode("program", children)
 
     def visitFunctionDecl(self, ctx):
-        print("[DEBUG] visiting FunctionDecl")
         name = ctx.ID().getText()
         typename = self.visit(ctx.typ())
         params = self.visit(ctx.paramList()) if ctx.paramList() else ASTNode("params", [])
         body = self.visit(ctx.block())
-        return ASTNode("function_decl", [params, body], name)
+        return ASTNode("function_decl", [typename, params, body], name)
+
+    def visitStructDecl(self, ctx):
+        name = ctx.ID().getText()
+        fields = [self.visit(f) for f in ctx.varDecl()]
+        return ASTNode("struct_decl", fields, name)
 
     def visitTyp(self, ctx):
         base = self.visit(ctx.baseType())
@@ -100,6 +101,11 @@ class ASTBuilder(MiniCVisitor):
     def visitLvalue(self, ctx):
         return ASTNode("lvalue", [], ctx.getText())
 
+    def visitIoStat(self, ctx):
+        op = ctx.start.text
+        args = [self.visit(arg) for arg in ctx.expression()]
+        return ASTNode("io", args, op)
+
     def visitLiteral(self, ctx):
         if ctx.INT():
             return ASTNode("int", [], int(ctx.INT().getText()))
@@ -114,7 +120,7 @@ class ASTBuilder(MiniCVisitor):
             op = ctx.getChild(1).getText()
             right = self.visit(ctx.getChild(2))
             return ASTNode("binop", [left, right], op)
-        elif ctx.getChildCount() == 2 and ctx.getChild(0).getText() in ['-', '!']:
+        elif ctx.getChildCount() == 2 and ctx.getChild(0).getText() in ['-', '!', '*', '&']:
             op = ctx.getChild(0).getText()
             expr = self.visit(ctx.getChild(1))
             return ASTNode("unop", [expr], op)
