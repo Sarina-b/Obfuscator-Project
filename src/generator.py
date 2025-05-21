@@ -1,76 +1,88 @@
 def generate_code(node, indent=0):
     space = '    ' * indent
+
     if node is None:
         return ""
-    if node.type == 'program':
-        return '\n'.join(generate_code(child, indent) for child in node.children)
 
-    elif node.type == 'function_def':
-        params = generate_code(node.children[0])
-        body = generate_code(node.children[1], indent + 1)
-        return f"{space}int {node.value}({params}) {{\n{body}\n{space}}}"
+    if isinstance(node, list):
+        return '\n'.join(generate_code(child, indent) for child in node if child is not None)
 
-    elif node.type == 'params':
-        return ', '.join(generate_code(child) for child in node.children)
+    children = getattr(node, 'children', [])
+    value = getattr(node, 'value', None)
+    node_type = getattr(node, 'type', None)
 
-    elif node.type == 'param':
-        typename, name = node.value
-        return f"{typename} {name}"
+    if node_type == 'program':
+        return '\n'.join(generate_code(child, indent) for child in children)
 
-    elif node.type == 'var_decl':
-        typename, name = node.value
-        return f"{space}{typename} {name};"
+    elif node_type == 'function_def':
+        params = generate_code(children[0]) if len(children) > 0 else ''
+        body = generate_code(children[1], indent + 1) if len(children) > 1 else ''
+        return f"{space}int {value}({params}) {{\n{body}\n{space}}}"
 
-    elif node.type == 'block':
-        return '\n'.join(generate_code(child, indent) for child in node.children)
+    elif node_type == 'params':
+        return ', '.join(generate_code(child) for child in children)
 
-    elif node.type == 'return':
-        if node.children:
-            return f"{space}return {generate_code(node.children[0])};"
+    elif node_type == 'param':
+        if isinstance(value, tuple):
+            typename, name = value
+            return f"{typename} {name}"
+        return ""
+
+    elif node_type == 'var_decl':
+        if isinstance(value, tuple):
+            typename, name = value
+            return f"{space}{typename} {name};"
+        return ""
+
+    elif node_type == 'block':
+        return '\n'.join(generate_code(child, indent) for child in children)
+
+    elif node_type == 'return':
+        if children:
+            return f"{space}return {generate_code(children[0])};"
         return f"{space}return;"
 
-    elif node.type == 'expr_stmt':
-        if node.children:
-            return f"{space}{generate_code(node.children[0])};"
+    elif node_type == 'expr_stmt':
+        if children:
+            return f"{space}{generate_code(children[0])};"
         return f"{space};"
 
-    elif node.type == 'assign':
-        left = generate_code(node.children[0])
-        right = generate_code(node.children[1])
+    elif node_type == 'assign':
+        left = generate_code(children[0]) if len(children) > 0 else ''
+        right = generate_code(children[1]) if len(children) > 1 else ''
         return f"{left} = {right}"
 
-    elif node.type == 'binop':
-        left = generate_code(node.children[0])
-        right = generate_code(node.children[1])
-        return f"({left} {node.value} {right})"
+    elif node_type == 'binop':
+        left = generate_code(children[0]) if len(children) > 0 else ''
+        right = generate_code(children[1]) if len(children) > 1 else ''
+        return f"({left} {value} {right})"
 
-    elif node.type == 'id':
-        return node.value
+    elif node_type == 'id':
+        return str(value)
 
-    elif node.type == 'int':
-        return str(node.value)
+    elif node_type == 'int':
+        return str(value)
 
-    elif node.type == 'char':
-        return node.value
+    elif node_type == 'char':
+        return repr(value)
 
-    elif node.type == 'bool':
-        return node.value
+    elif node_type == 'bool':
+        return str(value).lower()
 
-    elif node.type == 'if':
-        cond = generate_code(node.children[0])
-        then_branch = generate_code(node.children[1], indent + 1)
+    elif node_type == 'if':
+        cond = generate_code(children[0]) if len(children) > 0 else ''
+        then_branch = generate_code(children[1], indent + 1) if len(children) > 1 else ''
         result = f"{space}if ({cond}) {{\n{then_branch}\n{space}}}"
-        if len(node.children) > 2:
-            else_branch = generate_code(node.children[2], indent + 1)
+        if len(children) > 2:
+            else_branch = generate_code(children[2], indent + 1)
             result += f" else {{\n{else_branch}\n{space}}}"
         return result
 
-    elif node.type == 'label':
-        return f"{space}label: // {node.value}"
+    elif node_type == 'label':
+        return f"{space}label: // {value}"
 
-    elif node.type == 'switch_block':
-        # Placeholder output
+    elif node_type == 'switch_block':
         return f"{space}// control flow flattening placeholder"
 
     else:
-        return f"{space}// unhandled: {node.type}"
+        return f"{space}// unhandled: {node_type}"
