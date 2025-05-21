@@ -1,5 +1,4 @@
 from antlr_gen.MiniCParserVisitor import MiniCParserVisitor
-from antlr_gen.MiniCParserParser import *
 
 class ASTNode:
     def __init__(self, type_, children=None, value=None):
@@ -82,6 +81,9 @@ class ASTBuilder(MiniCParserVisitor):
             return ASTNode("bool", [], ctx.BOOL_LITERAL().getText())
         elif ctx.expression():
             return self.visit(ctx.expression())
+        else:
+            # Return a dummy node instead of None
+            return ASTNode("unknown", [])
 
     def visitChildren(self, node):
         return [self.visit(child) for child in node.getChildren()]

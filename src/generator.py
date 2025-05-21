@@ -1,6 +1,7 @@
 def generate_code(node, indent=0):
     space = '    ' * indent
-
+    if node is None:
+        return ""
     if node.type == 'program':
         return '\n'.join(generate_code(child, indent) for child in node.children)
 
