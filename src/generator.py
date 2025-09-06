@@ -79,7 +79,7 @@ def generate_code(node, indent=0):
 
     elif t == "call":
         args = ', '.join(generate_code(arg) for arg in c)
-        return f"{space}{v}({args});"
+        return f"{v}({args})"
 
     elif t == "lvalue":
         return v

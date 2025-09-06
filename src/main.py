@@ -7,8 +7,8 @@ from generator import generate_code
 
 
 def main():
-    input_path = "../test_input/input.mc"
-    output_path = "../test_output/output.mc"
+    input_path = "../test_input/input1.mc"
+    output_path = "../test_output/output1.mc"
 
     input_stream = FileStream(input_path, encoding='utf-8')
     lexer = MiniCLexer(input_stream)
