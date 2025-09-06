@@ -101,6 +101,9 @@ def generate_code(node, indent=0):
 
     elif t == "args":
         return ', '.join(generate_code(arg) for arg in c)
+    elif t == "unary":
+        child_code = generate_code(node.children[0])
+        return f"({node.value}{child_code})"
 
     elif t == "io":
         args = ', '.join(generate_code(arg) for arg in c)

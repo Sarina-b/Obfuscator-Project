@@ -10,8 +10,6 @@ def main():
     input_path = "../test_input/input.mc"
     output_path = "../test_output/output.mc"
 
-    print(f"Reading from: {input_path}")
-
     input_stream = FileStream(input_path, encoding='utf-8')
     lexer = MiniCLexer(input_stream)
     stream = CommonTokenStream(lexer)
@@ -24,7 +22,7 @@ def main():
     builder = ASTBuilder()
     ast = builder.visit(tree)
 
-    print("AST:", ast)
+    print("AST tree:", ast)
 
     obf = Obfuscator()
     obfuscated_ast = obf.apply(ast)
@@ -37,8 +35,6 @@ def main():
 
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(code)
-
-    print(f"Writing to: {output_path}")
 
 
 if __name__ == "__main__":

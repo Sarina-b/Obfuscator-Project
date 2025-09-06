@@ -65,9 +65,11 @@ class Obfuscator:
         if node.type == 'binop' and node.value == '+':
             if len(node.children) == 2:
                 left, right = node.children
-                if right and right.type == 'int' and isinstance(right.value, int):
-                    node.value = '-'
-                    node.children = [left, ASTNode("int", [], -right.value)]
+                node.value = '-'
+                node.children = [
+                    left,
+                    ASTNode("unary", [right], "-")
+                ]
 
         for child in node.children or []:
             self.expression_equivalence(child)
