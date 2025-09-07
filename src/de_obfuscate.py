@@ -5,8 +5,12 @@ from antlr_gen.MiniCParser import MiniCParser
 from ast_builder import ASTBuilder
 from de_obfuscator import Deobfuscator
 from generator import generate_code
-from src.cfg_builder import plot_cfg, CFGBuilder, CFGNode
+from src.cfg_builder import plot_cfg, CFGBuilder
 
+import os
+
+# Detect CI environment
+IN_CI = os.environ.get("CI") == "true"
 
 def main():
     inp = "../test_input/input1.obfuscated1.mc"
@@ -29,8 +33,10 @@ def main():
 
     cfg_builder = CFGBuilder()
     entry, exit_node = cfg_builder.build(cleaned_ast)
-    plot_cfg(entry)
 
+    # Skip plotting in CI
+    if not IN_CI:
+        plot_cfg(entry)
 
     code = generate_code(cleaned_ast)
 
