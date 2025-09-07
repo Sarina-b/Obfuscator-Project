@@ -25,7 +25,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run obfuscator
-        run: python src/main.py
+        run: |
+          export PYTHONPATH=$PYTHONPATH:.
+          python src/main.py
 
       - name: Run deobfuscator
-        run: python src/de_obfuscate.py
+        run: |
+          export PYTHONPATH=$PYTHONPATH:.
+          python src/de_obfuscate.py
