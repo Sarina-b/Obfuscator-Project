@@ -76,14 +76,32 @@ To ensure the output behaves exactly like the input:
 ## 📂 Project Structure
 
 ```
-├── main.py                # Entry point
-├── input.mc               # Sample input file
-├── output.mc              # Obfuscated output file
-├── obfuscator.py          # Obfuscation logic
-├── generator.py           # Code generator from AST
-├── ast_builder.py         # AST construction
-├── MiniC.g4
-├── antlr_gen/             # ANTLR-generated parser classes
+Obfuscator-Project/
+├── antlr_gen/               # ANTLR-generated parser classes
+│   ├── MiniCLexer.py
+│   ├── MiniCListener.py
+│   ├── MiniCParser.py
+│   └── MiniCVisitor.py
+├── grammers/
+│   └── MiniC.g4             # Grammar file
+├── src/
+│   ├── ast_builder.py       # AST construction
+│   ├── cfg_builder.py       # CFG construction
+│   ├── de_obfuscate.py      # De-obfuscation script
+│   ├── generator.py         # Code generator from AST
+│   ├── main.py              # Entry point
+│   └── obfuscator.py        # Obfuscation logic
+├── test_input/
+│   ├── input.mc             # Sample input file
+│   ├── input.obfuscated.mc  # Obfuscated version
+│   ├── input1.mc
+│   └── input1.obfuscated1.mc
+├── test_output/
+│   └── output.mc            # Generated output
+├── .gitignore
+├── Dockerfile
+├── README.md
+└── Report-Phase1.pdf
 ```
 
 ---
