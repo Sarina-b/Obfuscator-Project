@@ -93,51 +93,41 @@ class MiniCVisitor(ParseTreeVisitor):
     def visitIfStat(self, ctx:MiniCParser.IfStatContext):
         return self.visitChildren(ctx)
 
-
     # Visit a parse tree produced by MiniCParser#whileStat.
     def visitWhileStat(self, ctx:MiniCParser.WhileStatContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by MiniCParser#forStat.
     def visitForStat(self, ctx:MiniCParser.ForStatContext):
         return self.visitChildren(ctx)
 
-
     # Visit a parse tree produced by MiniCParser#returnStat.
     def visitReturnStat(self, ctx:MiniCParser.ReturnStatContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by MiniCParser#funcCall.
     def visitFuncCall(self, ctx:MiniCParser.FuncCallContext):
         return self.visitChildren(ctx)
 
-
     # Visit a parse tree produced by MiniCParser#argumentList.
     def visitArgumentList(self, ctx:MiniCParser.ArgumentListContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by MiniCParser#ioStat.
     def visitIoStat(self, ctx:MiniCParser.IoStatContext):
         return self.visitChildren(ctx)
 
-
     # Visit a parse tree produced by MiniCParser#expressionList.
     def visitExpressionList(self, ctx:MiniCParser.ExpressionListContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by MiniCParser#expression.
     def visitExpression(self, ctx:MiniCParser.ExpressionContext):
         return self.visitChildren(ctx)
 
-
     # Visit a parse tree produced by MiniCParser#unaryOp.
     def visitUnaryOp(self, ctx:MiniCParser.UnaryOpContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by MiniCParser#literal.
     def visitLiteral(self, ctx:MiniCParser.LiteralContext):

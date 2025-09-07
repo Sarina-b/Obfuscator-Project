@@ -1,60 +1,42 @@
-# main.py
-import sys
 from antlr4 import FileStream, CommonTokenStream
-from MiniCLexer import MiniCLexer
-from MiniCParser import MiniCParser
-from ast_builder import AstBuilder # Your AST builder class
-from obfuscator import Obfuscator    # Your Obfuscator class
-from generator import CodeGenerator  # Your Code Generator class
+from antlr_gen.MiniCLexer import MiniCLexer
+from antlr_gen.MiniCParser import  MiniCParser
+from ast_builder import ASTBuilder
+from obfuscator import Obfuscator
+from generator import generate_code
+
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python main.py input.mc")
-        return
+    input_path = "../test_input/input1.mc"
+    output_path = "../test_output/output1.mc"
 
-    input_file = sys.argv[1]
-    output_file = "output.mc"
+    input_stream = FileStream(input_path, encoding='utf-8')
+    lexer = MiniCLexer(input_stream)
+    stream = CommonTokenStream(lexer)
+    parser = MiniCParser(stream)
 
-    try:
-        # 1. Read input file
-        input_stream = FileStream(input_file)
+    tree = parser.program()
 
-        # 2. Lexer
-        lexer = MiniCLexer(input_stream)
-        token_stream = CommonTokenStream(lexer)
+    print("Parse tree:", tree.toStringTree(recog=parser))
 
-        # 3. Parser
-        parser = MiniCParser(token_stream)
-        parse_tree = parser.program()  # 'program' is your entry rule in MiniC.g4
+    builder = ASTBuilder()
+    ast = builder.visit(tree)
 
-        # 4. AST Building
-        ast_builder_visitor = AstBuilder()
-        ast = ast_builder_visitor.visit(parse_tree)
-        print("--- Original AST (Conceptual) ---")
-        # You might want a way to print/debug your AST here
-        # print(ast)
+    print("AST tree:", ast)
 
-        # 5. Obfuscation
-        obfuscator_instance = Obfuscator(ast)
-        obfuscated_ast = obfuscator_instance.obfuscate()
-        print("--- Obfuscated AST (Conceptual) ---")
-        # print(obfuscated_ast)
+    obf = Obfuscator()
+    obfuscated_ast = obf.apply(ast)
 
-        # 6. Code Generation
-        code_gen = CodeGenerator()
-        obfuscated_code = code_gen.generate(obfuscated_ast)
-        print(f"\n--- Obfuscated Code ({output_file}) ---")
-        print(obfuscated_code)
+    print("Obfuscated AST:", obfuscated_ast)
 
-        # 7. Write to output file
-        with open(output_file, 'w') as f:
-            f.write(obfuscated_code)
-        print(f"\nSuccessfully obfuscated '{input_file}' to '{output_file}'")
+    code = generate_code(obfuscated_ast)
 
-    except Exception as e:
-        print(f"Error: {e}")
-        import traceback
-        traceback.print_exc()
+    print("Generated code:", code)
 
-if __name__ == '__main__':
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(code)
+
+
+if __name__ == "__main__":
     main()
+
