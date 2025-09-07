@@ -1,0 +1,6 @@
+/.idea
+.env
+/.fleet
+/.vscode
+/vendor__pycache__/
+*.pyc
