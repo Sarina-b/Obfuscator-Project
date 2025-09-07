@@ -26,10 +26,12 @@ jobs:
 
       - name: Run obfuscator
         run: |
-          export PYTHONPATH=$PYTHONPATH:.
-          python src/main.py
+          cd src
+          export PYTHONPATH=$PYTHONPATH:..
+          python main.py
 
       - name: Run deobfuscator
         run: |
-          export PYTHONPATH=$PYTHONPATH:.
-          python src/de_obfuscate.py
+          cd src
+          export PYTHONPATH=$PYTHONPATH:..
+          python de_obfuscate.py
