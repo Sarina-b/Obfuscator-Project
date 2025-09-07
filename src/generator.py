@@ -1,90 +1,46 @@
-def generate_code(node, indent=0):
-    space = '    ' * indent
+# generator.py
 
-    if node.type == 'program':
-        return '\n'.join(generate_code(child, indent) for child in node.children)
+class CodeGenerator:  # Could also be an AST Visitor
+    def generate(self, node):
+        if isinstance(node, ProgramNode):
+            return "\n".join(self.generate(item) for item in node.declarations_and_functions)
 
-    elif node.type == 'var_decl':
-        typename, name = node.value
-        return f"{space}{typename} {name};"
+        elif isinstance(node, FunctionDeclarationNode):
+            params_str = ", ".join(f"{p.type} {p.name}" for p in node.params)  # Assuming ParamNode has type and name
+            body_str = self.generate(node.body)
+            return f"{node.return_type} {node.name}({params_str}) {body_str}"
 
-    elif node.type == 'function_def':
-        name = node.value
-        params = generate_code(node.children[0])
-        body = generate_code(node.children[1], indent)
-        return f"{space}int {name}({params}) {{\n{body}\n{space}}}"
+        elif isinstance(node, BlockNode):  # Assuming BlockNode has 'statements' list
+            stmts_str = "\n  ".join(self.generate(stmt) + ";" for stmt in node.statements)
+            return f"{{\n  {stmts_str}\n}}"
 
-    elif node.type == 'params':
-        return ', '.join(generate_code(child) for child in node.children)
+        elif isinstance(node, VariableDeclarationNode):
+            init_str = ""
+            if node.initializer:
+                init_str = f" = {self.generate(node.initializer)}"
+            return f"{node.var_type} {node.name}{init_str}"
 
-    elif node.type == 'param':
-        typename, name = node.value
-        return f"{typename} {name}"
+        elif isinstance(node, AssignmentNode):
+            return f"{self.generate(node.identifier)} = {self.generate(node.expression)}"
 
-    elif node.type == 'block':
-        return '\n'.join(generate_code(child, indent + 1) for child in node.children)
+        elif isinstance(node, IdentifierNode):
+            return node.name
 
-    elif node.type == 'return':
-        if node.children:
-            expr = generate_code(node.children[0])
-            return f"{space}return {expr};"
+        elif isinstance(node, LiteralNode):  # Assuming LiteralNode has 'value'
+            # Handle different types of literals (int, char, bool) appropriately
+            if isinstance(node.value, str) and node.type == 'char':  # Example for char
+                return f"'{node.value}'"
+            return str(node.value)
+
+        elif isinstance(node, BinaryOpNode):
+            return f"({self.generate(node.left)} {node.operator} {self.generate(node.right)})"
+
+        elif isinstance(node, PrintfNode):  # Assuming PrintfNode has format_string and args
+            args_str = ", ".join(self.generate(arg) for arg in node.args)
+            return f'printf("{node.format_string}", {args_str})'
+
+        # ... implement generate methods for all your AST node types
+        # (IfStatementNode, WhileStatementNode, ForStatementNode, ReturnStatementNode, etc.)
+
         else:
-            return f"{space}return;"
-
-    elif node.type == 'if':
-        cond = generate_code(node.children[0])
-        then_stmt = generate_code(node.children[1], indent)
-        if len(node.children) > 2:
-            else_stmt = generate_code(node.children[2], indent)
-            return f"{space}if ({cond}) {{\n{then_stmt}\n{space}}} else {{\n{else_stmt}\n{space}}}"
-        else:
-            return f"{space}if ({cond}) {{\n{then_stmt}\n{space}}}"
-
-    elif node.type == 'expr_stmt':
-        if node.children:
-            expr = generate_code(node.children[0])
-            return f"{space}{expr};"
-        else:
-            return f"{space};"
-
-    elif node.type == 'assign':
-        left = generate_code(node.children[0])
-        right = generate_code(node.children[1])
-        return f"{left} = {right}"
-
-    elif node.type == 'binop':
-        left = generate_code(node.children[0])
-        right = generate_code(node.children[1])
-        return f"({left} {node.value} {right})"
-
-    elif node.type == 'id':
-        return node.value
-
-    elif node.type == 'int':
-        return str(node.value)
-
-    elif node.type == 'char':
-        return node.value
-
-    elif node.type == 'bool':
-        return 'true' if node.value else 'false'
-
-    elif node.type == 'label':
-        return f"{space}// label: {node.value}"
-
-    elif node.type == 'switch_block':
-        label1, label2 = node.children
-        return f"""{space}int selector = 1;
-{space}while (selector > 0) {{
-{space}    switch (selector) {{
-{space}        case 1:
-{space}            selector = 2;
-{space}            break;
-{space}        case 2:
-{space}            selector = 0;
-{space}            break;
-{space}    }}
-}}"""
-
-    else:
-        return f"{space}// [UNHANDLED NODE: {node.type}]"
+            raise TypeError(f"Cannot generate code for AST node of type: {type(node)}")

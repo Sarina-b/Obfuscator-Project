@@ -82,8 +82,7 @@ To ensure the output behaves exactly like the input:
 ├── obfuscator.py          # Obfuscation logic
 ├── generator.py           # Code generator from AST
 ├── ast_builder.py         # AST construction
-├── MiniCLexer.g4          # Mini-C lexer grammar
-├── MiniCParser.g4         # Mini-C parser grammar
+├── MiniC.g4
 ├── antlr_gen/             # ANTLR-generated parser classes
 ```
 
